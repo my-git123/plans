@@ -1,0 +1,4 @@
+{
+    "mongoURI":"mongodb+srv://Angela123:angela123@cable-connect.mwxrg.mongodb.net/<dbname>?retryWrites=true&w=majority",
+    "jwtSecret": "qwertyuiop"
+}
