@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-//const auth = require('../../middleware/auth');
+const auth = require('../../middleware/auth');
 const {body,validationResult} = require('express-validator');
 const Plan = require('../../models/Plan');
 // const User = require('../../models/User');
@@ -61,5 +61,45 @@ try {
 //         res.status(500).send('Server Error');
 //     }
 // })
+//@route  POST api/plans/:plan_id
+//@desc   Add channel in plan 
+//@access Private
+router.post('/:planId',[auth,[
+    body('channelName','Please specify a channel name').not().isEmpty()
+]], async (req,res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({errors:errors.array()});
+    }
+    const {channelName,description,price} = req.body;
+    //const newPlan = {planType,cost};
+        
+    try {
+        
+        const plan = await Plan.findOneAndUpdate({_id:req.params.planId},
+            { channels: Channel._id }, { new: true });
+         let newChannel = new Channel({channelName,description,price });
+        
+       newChannel.save();
+        plan.channel = newChannel;
+         await plan.save();
+        return res.json(plan);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
+//@route  GET api/plans/:planId
+//@desc   Get a plan by id and populating its channel 
+//@access Private
+router.get('/:planId', auth, async(req,res) => {
+    try {
+        const plan = await Plan.findOne({_id:req.params.planId}).populate('channel',['channelName']);
+        res.json(plan);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+    });
 
 module.exports = router;

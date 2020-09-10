@@ -6,7 +6,11 @@ const PlanSchema = new mongoose.Schema({
     },
     cost: {
         type: String,
-        }
+        },
+    channel: {
+        type:mongoose.Schema.Types.ObjectId,
+        ref: "channel"
+    }
 });
 
 module.exports = Plan = mongoose.model('plan',PlanSchema);

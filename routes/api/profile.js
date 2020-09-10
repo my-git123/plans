@@ -103,7 +103,7 @@ router.put('/plan',[auth,[
         let newPlan = new Plan({
             planType,cost,user:req.user.id
         });
-       //newPlan.save();
+       await newPlan.save();
         profile.plan = newPlan;
          await profile.save();
         return res.json(profile);
@@ -112,7 +112,34 @@ router.put('/plan',[auth,[
         res.status(500).send('Server Error');
     }
 })
-
+//@route  POST api/profile/plan/:planId
+//@desc   Add channel for plan in user profile
+//@access Private
+router.post('/plan/:planId',[auth,[
+    body('channelName','Please specify a channel name').not().isEmpty()
+]], async (req,res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({errors:errors.array()});
+    }
+    const {channelName,description,price} = req.body;
+    //const newPlan = {planType,cost};
+        
+    try {
+        const plan = await Plan.findOneAndUpdate({_id:req.params.planId},
+            {channels: Channel._id}, {new:true});
+        let newChannel = new Channel({channelName,description,price });
+        
+        
+       //newPlan.save();
+        plan.channels = newChannel;
+         await plan.save();
+        return res.json(plan);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+});
 //@route  GET api/profile/myChannels
 //@desc   GET  user's channels
 //@access Private
