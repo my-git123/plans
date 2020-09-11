@@ -3,25 +3,27 @@ const router = express.Router();
 const auth = require('../../middleware/auth');
 const {body,validationResult} = require('express-validator');
 const Plan = require('../../models/Plan');
-// const User = require('../../models/User');
+const Channel = require('../../models/Channel');
 // const Profile = require('../../models/Profile');
 
 //@route  POST api/plans
 //@desc   Add new plan 
 //@access Public
 router.post('/',[
-    body('planType','Specify a plan type').not().isEmpty()
-], async (req,res) => {
+    body('planType','Specify a plan type').not().isEmpty(),
+    ], async (req,res) => {
     const errors = validationResult(req);
     if(!errors.isEmpty()) {
         return res.status(400).json({errors: errors.array()});
     }
-    const {planType,cost} = req.body;
+    let {planType,cost} = req.body;
     
     try {
         //const user = await User.findById(req.user.id).select('-password');
-        const newPlan = new Plan({ planType, cost });
+        let newPlan = new Plan({ planType, cost });
+        //channel = channel.split(",").map(ch => ch.trim());
         const plan = await newPlan.save();
+        //console.log(channel);
         res.json(plan);
     } catch (err) {
         console.error(err.message);
@@ -62,28 +64,30 @@ try {
 //     }
 // })
 //@route  POST api/plans/:plan_id
-//@desc   Add channel in plan 
-//@access Private
-router.post('/:planId',[auth,[
+//@desc   Create new Channel and update channel field in plan 
+//@access Public
+router.post('/:planId',[
     body('channelName','Please specify a channel name').not().isEmpty()
-]], async (req,res) => {
+], async (req,res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({errors:errors.array()});
     }
     const {channelName,description,price} = req.body;
     //const newPlan = {planType,cost};
-        
+     
     try {
         
-        const plan = await Plan.findOneAndUpdate({_id:req.params.planId},
-            { channels: Channel._id }, { new: true });
          let newChannel = new Channel({channelName,description,price });
-        
+         const plan = await Plan.findOneAndUpdate(
+             {_id:req.params.planId},
+             {$set:{channel:newChannel}},
+             {new:true});
+        //plan.channel.unshift(newChannel);
        newChannel.save();
         plan.channel = newChannel;
          await plan.save();
-        return res.json(plan);
+        res.json(plan);
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Error');
@@ -94,7 +98,7 @@ router.post('/:planId',[auth,[
 //@access Private
 router.get('/:planId', auth, async(req,res) => {
     try {
-        const plan = await Plan.findOne({_id:req.params.planId}).populate('channel',['channelName']);
+        const plan = await Plan.findOne({_id:req.params.planId}).populate('channel',['channelName','description','price']);
         res.json(plan);
     } catch (err) {
         console.error(err.message);
