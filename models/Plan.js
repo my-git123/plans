@@ -8,14 +8,12 @@ const PlanSchema = new Schema({
     cost: {
         type: String
     },
-    channel: 
+    channel: [
         {
           type: Schema.Types.ObjectId,
           ref : "channel"
-            
-    }
-
-
+        }
+]
 });
 
 module.exports = Plan = mongoose.model('plan',PlanSchema);

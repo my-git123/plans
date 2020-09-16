@@ -4,7 +4,6 @@ const auth = require('../../middleware/auth');
 const {body,validationResult} = require('express-validator');
 const Plan = require('../../models/Plan');
 const Channel = require('../../models/Channel');
-// const Profile = require('../../models/Profile');
 
 //@route  POST api/plans
 //@desc   Add new plan 
@@ -19,12 +18,9 @@ router.post('/',[
     let {planType,cost} = req.body;
     
     try {
-        //const user = await User.findById(req.user.id).select('-password');
-        let newPlan = new Plan({ planType, cost });
-        //channel = channel.split(",").map(ch => ch.trim());
-        const plan = await newPlan.save();
-        //console.log(channel);
-        res.json(plan);
+         let newPlan = new Plan({ planType, cost });
+         const plan = await newPlan.save();
+         res.json(plan);
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Erorr');
@@ -44,25 +40,6 @@ try {
 }
 });
 
-//@route  DELETE api/plans/:plan_id
-//@desc   Delete plan in user profile
-//@access Private
-// router.delete('/:id',auth, async (req,res) => {
-//     try {
-//         const plan = await Plan.findById(req.params.id);
-//         if(!plan) {
-//             return res.status(404).json({msg: "Plan not found"});
-//         }
-//         if(plan.user.toString() !== req.user.id) {
-//             return res.status(401).json({msg:'User not authorized'});
-//         }
-//         await plan.remove();
-//         res.json({msg: 'Plan removed'});
-//     } catch (err) {
-//         console.error(err.message);
-//         res.status(500).send('Server Error');
-//     }
-// })
 //@route  POST api/plans/:plan_id
 //@desc   Create new Channel and update channel field in plan 
 //@access Public
@@ -74,19 +51,16 @@ router.post('/:planId',[
         return res.status(400).json({errors:errors.array()});
     }
     const {channelName,description,price} = req.body;
-    //const newPlan = {planType,cost};
-     
+        
     try {
         
          let newChannel = new Channel({channelName,description,price });
          const plan = await Plan.findOneAndUpdate(
              {_id:req.params.planId},
-             {$set:{channel:newChannel}},
              {new:true});
-        //plan.channel.unshift(newChannel);
-       newChannel.save();
-        plan.channel = newChannel;
-         await plan.save();
+         plan.channel.unshift(newChannel);
+          newChannel.save();
+          await plan.save();
         res.json(plan);
     } catch (err) {
         console.error(err.message);

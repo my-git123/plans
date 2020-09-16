@@ -5,11 +5,14 @@ const ProfileSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref : "user"
     },
+    planType: {
+        type: String,
+           },
     plan: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "plan"
-        },
-    myChannels:[
+        type:mongoose.Schema.Types.ObjectId,
+            ref:"plan"
+    },
+    channels:[
         {
             type:mongoose.Schema.Types.ObjectId,
             ref:"channel"
