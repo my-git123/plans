@@ -117,7 +117,7 @@ router.get('/:profileId/plan', auth, async (req,res) => {
             const plan = await Plan.findOne({planType:profile.planType}).populate('channel',['channelName','description','price']);
             if (plan) {
                 profile = await Profile.findOneAndUpdate({_id:req.params.profileId},
-                   {plan:plan}).populate('plan');
+                   {plan:plan}).populate('plan',['planType','cost']);
                 return res.json(profile);
             }
         }
