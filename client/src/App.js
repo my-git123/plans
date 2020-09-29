@@ -12,7 +12,8 @@ import store from "./store";
 import {loadUser} from './actions/auth';
 import setAuthToken from "./utils/setAuthToken";
 import MyPlan from './components/dashboard/MyPlan';
-
+import Account from './components/account/Account';
+import ViewPlan from './components/plan/ViewPlan';
 if(localStorage.token) {
   setAuthToken(localStorage.token);
 }
@@ -33,7 +34,10 @@ const App = () => {
         <Route exact path = '/login' component = {Login} />
         <Route exact path = '/dashboard' component = {Dashboard} />
         <Route exact path = '/my-plan' component = {MyPlan} />
-        <Route exact path = '/profile/userId' component = {Profile} />
+        <Route exact path = '/my-account' component = {Account} />
+        <Route exact path = '/view-plans' component = {ViewPlan} />
+        <Route exact path = '/my-profile' component = {Profile} />
+        
 
        </Switch>   
      </section>

@@ -10,3 +10,5 @@ export const PROFILE_PLANS = "PROFILE_PLANS";
 export const PLAN_ERROR = "PLAN_ERROR";
 export const GET_PROFILES = "GET_PROFILES";
 export const PROFILE_ERROR = "PROFILE_ERROR";
+export const GET_PLANS = "GET_PLANS";
+export const PLANS_ERROR = "PLANS_ERROR";

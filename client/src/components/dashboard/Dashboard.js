@@ -21,8 +21,7 @@ const Dashboard = ({auth:{user},profile:{profile,loading,plan},getCurrentProfile
     {profile !== null ? <Fragment>
         <DashboardTasks /> 
         
-        
-        
+               
         <MyPlan plan = {plan} 
                 profile = {profile}/>
         <MyChannels profile = {profile} />
