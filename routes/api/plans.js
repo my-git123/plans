@@ -32,7 +32,7 @@ router.post('/',[
 //@access Public
 router.get('/', async(req,res) => {
 try {
-    const plans = await Plan.find();
+    const plans = await Plan.find().populate('channel',['channelName']);
     res.json(plans);
 } catch (err) {
     console.error(err.message);
